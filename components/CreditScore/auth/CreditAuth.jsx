@@ -5,6 +5,7 @@ import InputTwo from "@/components/Common/InputTwo";
 import { useFormValidation } from "@/hooks/useValidation";
 import FaqSection from "@/components/Common/FaqSection";
 import CreditScoreFAQ from "@/mock/CreditScoreFAQ";
+import CreditOtpValidation from "./CreditOtpValidation";
 
 const CreditAuth = () => {
   const fields = ["fullName", "email", "mobileNumber"];
@@ -51,6 +52,37 @@ const CreditAuth = () => {
     // });
 
     console.log("data", data);
+  };
+
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
+  const Modal = ({ isOpen, closeModal }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="relative w-full max-w-sm rounded-lg bg-white p-4">
+          {/* Close Button */}
+          <button
+            onClick={closeModal}
+            className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+          >
+            &times;
+          </button>
+          {/* OTP Validation */}
+          <CreditOtpValidation
+            utmSource={""}
+            utmMedium={""}
+            platform={""}
+            mobile={""}
+            verifyOtp={""}
+          />
+        </div>
+      </div>
+    );
   };
   return (
     <div>
@@ -127,15 +159,19 @@ const CreditAuth = () => {
                 </div>
                 {/* Get OTP Button */}
                 <button
-                  className="custom-gradient w-full rounded-xl p-1 text-[28px] font-bold text-white shadow-[0px_4.06px_4.06px_-2.03px_rgba(0,0,0,0.48)]"
+                  type="button"
+                  onClick={openModal}
+                  className="w-full rounded-xl p-1 text-[28px] font-bold text-white shadow-[0px_4.06px_4.06px_-2.03px_rgba(0,0,0,0.48)]"
                   style={{
                     background:
-                      "radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%);",
+                      "radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%)",
                   }}
                 >
                   Get OTP
                 </button>
               </form>
+
+              <Modal isOpen={isModalOpen} closeModal={closeModal} />
 
               <div className="py-4">
                 <div className="flex items-center justify-start py-1">
@@ -172,18 +208,13 @@ const CreditAuth = () => {
             <div className="mt-[40px] flex flex-col items-start justify-start space-y-6">
               {/* Credit Scrore Meter */}
               <div>
-                <img
-                  src="/credit-score/credit-meter.svg"
-                  className="max-h-[500px] max-w-[500px]"
-                  alt="Credit Meter"
-                />
+                <img src="/credit-score/credit-meter.svg" alt="Credit Meter" />
               </div>
 
               {/* Credit Features */}
               <div>
                 <img
                   src="/credit-score/credit-features.svg"
-                  className="max-h-[500px] max-w-[500px]"
                   alt="Credit Meter"
                 />
               </div>
@@ -284,7 +315,7 @@ const CreditAuth = () => {
         </p>
       </div>
 
-      <div className="container mx-auto">
+      <div className="container mx-auto p-6">
         <FaqSection faqData={CreditScoreFAQ} heading={"Credit Score FAQ"} />
       </div>
     </div>
