@@ -13,6 +13,10 @@ const config: Config = {
       colors: {
         "bl-blue": "#00b5ef",
       },
+      backgroundImage: {
+        'custom-gradient':
+          'linear-gradient(90deg, #0076D7 0%, #003795 100%), radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%)',
+      },
       boxShadow: {
         custom: "0px 0px 4px 0px rgba(0, 0, 0, 0.25)", // equivalent to #00000040
       },

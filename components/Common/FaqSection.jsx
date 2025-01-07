@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 
-const FaqSection = ({ faqData }) => {
+const FaqSection = ({ faqData, heading }) => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleFAQ = (index) => {
@@ -14,8 +13,8 @@ const FaqSection = ({ faqData }) => {
         {openIndex !== index ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
+            width="25"
+            height="25"
             viewBox="0 0 256 256"
           >
             <g
@@ -59,20 +58,19 @@ const FaqSection = ({ faqData }) => {
   }
 
   return (
-    <div className="mx-auto max-w-full p-4">
-      <div className="rounded-md border border-gray-200 px-4">
+    <div className="mx-auto max-w-full">
+      {/* Header Curve */}
+      <div className="font-500 flex h-[80px] w-full items-center justify-start bg-[url('/credit-score/curve-bg.png')] bg-no-repeat px-6 text-[25px] text-white">
+        {heading}
+      </div>
+
+      {/* Faq */}
+      <div className="rounded-md border p-4 px-8">
         {faqData.map((item, index) => (
-          <div
-            key={index}
-            className={`${
-              index === faqData.length - 1
-                ? "border-none"
-                : "border-b border-gray-300"
-            } transition-all duration-300`}
-          >
+          <div key={index} className="bg-white py-2">
             <button
               onClick={() => toggleFAQ(index)}
-              className="flex w-full items-center justify-between px-2 py-5 text-left focus:outline-none"
+              className="flex w-full items-center justify-between rounded-lg bg-white px-2 py-1 text-left shadow focus:outline-none"
             >
               <span className="font-semibold">{item.question}</span>
               <span className="flex items-center justify-center rounded-full bg-[#47b6f2] text-center text-3xl font-semibold text-white">
@@ -80,7 +78,7 @@ const FaqSection = ({ faqData }) => {
               </span>
             </button>
             <div
-              className={`overflow-hidden transition-[max-height] duration-300 ${
+              className={`overflow-hidden shadow transition-[max-height] duration-300 ${
                 openIndex === index ? "max-h-[200px]" : "max-h-0"
               }`}
             >
@@ -94,15 +92,6 @@ const FaqSection = ({ faqData }) => {
       </div>
     </div>
   );
-};
-
-FaqSection.propTypes = {
-  faqData: PropTypes.arrayOf(
-    PropTypes.shape({
-      question: PropTypes.string.isRequired,
-      answer: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
 };
 
 export default FaqSection;
