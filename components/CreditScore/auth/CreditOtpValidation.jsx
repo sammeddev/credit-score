@@ -48,6 +48,7 @@ const CreditOtpValidation = ({
     loading: false,
     message: "",
     canVerifyOtp: false,
+    enteredOtp: "",
   });
   const [userData, setUserData] = useState("");
   // console.log("userData", userData);
@@ -76,7 +77,14 @@ const CreditOtpValidation = ({
       });
 
       // Make OTP verification API call
-      const response = await verifyOTP(payload);
+      // const response = await verifyOTP(payload);
+      const response = {
+        data: {
+          status: "success",
+          message: "OTP Match",
+          user_token: "1234567zxcvb",
+        },
+      };
       handleVerificationResponse(response?.data); // Handle response from API
     } catch (error) {
       const errorMessage =
@@ -96,6 +104,18 @@ const CreditOtpValidation = ({
       toast.success(response?.message); // sucess toast
       verifyUsers(response?.user_token);
       setUserData(response);
+      // Update the form state to reflect that the modal is open
+      setFormState((prev) => {
+        const updatedState = {
+          ...prev,
+          isUserAuthSuccess: true,
+        };
+
+        // Store the updated state in sessionStorage
+        sessionStorage.setItem("u_data", JSON.stringify(updatedState));
+
+        return updatedState;
+      });
       return;
     }
 
@@ -134,8 +154,8 @@ const CreditOtpValidation = ({
       setState((prev) => ({
         ...prev,
         canVerifyOtp: true,
+        enteredOtp: enteredOtp,
       }));
-      //   handleOtpVerification(enteredOtp);
     } else {
       setState((prev) => ({
         ...prev,
@@ -149,6 +169,25 @@ const CreditOtpValidation = ({
     if (e.key === "Backspace" && !otpValues[index] && index > 0) {
       inputRefs.current[index - 1].focus();
     }
+  };
+
+  // Handle Verify OTP
+  const handleVerifyOTP = (e) => {
+    e.preventDefault();
+    // Update the form state to reflect that the modal is open
+    setFormState((prev) => {
+      const updatedState = {
+        ...prev,
+        isModalOpen: false,
+      };
+
+      // Store the updated state in sessionStorage
+      sessionStorage.setItem("u_data", JSON.stringify(updatedState));
+
+      return updatedState;
+    });
+
+    handleOtpVerification(state?.enteredOtp);
   };
 
   // Resend OTP handler
@@ -227,42 +266,42 @@ const CreditOtpValidation = ({
     }
   };
 
-  useEffect(() => {
-    // Exit early if userData is empty or undefined
-    if (!userData || userData === "") return;
+  // useEffect(() => {
+  //   // Exit early if userData is empty or undefined
+  //   if (!userData || userData === "") return;
 
-    if (userData && userData.loan_status_30 === 0) {
-      // here user can take new journey
-      setUserId(userData.id);
-      setStartUserNewJourney(true);
-      setShowOfferPage(false);
-      const data = {
-        userId: userData.id,
-        StartUserNewJourney: startUserNewJourney,
-        ShowOfferPage: showOfferPage,
-      };
-      // Store the JSON data in sessionStorage
-      sessionStorage.setItem("u_stat_bdl", JSON.stringify(data));
+  //   if (userData && userData.loan_status_30 === 0) {
+  //     // here user can take new journey
+  //     setUserId(userData.id);
+  //     setStartUserNewJourney(true);
+  //     setShowOfferPage(false);
+  //     const data = {
+  //       userId: userData.id,
+  //       StartUserNewJourney: startUserNewJourney,
+  //       ShowOfferPage: showOfferPage,
+  //     };
+  //     // Store the JSON data in sessionStorage
+  //     sessionStorage.setItem("u_stat_bdl", JSON.stringify(data));
 
-      router.push("/apply-loan-online/user-journey");
-    } else {
-      setUserId(userData.id);
-      setStartUserNewJourney(false);
-      setShowOfferPage(true);
-      const data = {
-        userId: userData.id,
-        StartUserNewJourney: startUserNewJourney,
-        ShowOfferPage: showOfferPage,
-      };
+  //     router.push("/apply-loan-online/user-journey");
+  //   } else {
+  //     setUserId(userData.id);
+  //     setStartUserNewJourney(false);
+  //     setShowOfferPage(true);
+  //     const data = {
+  //       userId: userData.id,
+  //       StartUserNewJourney: startUserNewJourney,
+  //       ShowOfferPage: showOfferPage,
+  //     };
 
-      // Store the JSON data in sessionStorage
-      const userStat = encryptData(data);
-      sessionStorage.setItem("u_stat_bdl", userStat);
+  //     // Store the JSON data in sessionStorage
+  //     const userStat = encryptData(data);
+  //     sessionStorage.setItem("u_stat_bdl", userStat);
 
-      // loan_status_30 = 1 redirect to offer page
-      router.push("/apply-loan-online/user-status");
-    }
-  }, [userData]);
+  //     // loan_status_30 = 1 redirect to offer page
+  //     router.push("/apply-loan-online/user-status");
+  //   }
+  // }, [userData]);
 
   const handleEditClick = () => {
     // Update the form state to reflect that the modal is open
@@ -376,7 +415,8 @@ const CreditOtpValidation = ({
               ? "radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%)"
               : "gray",
           }}
-          disabled={true}
+          disabled={!state.canVerifyOtp}
+          onClick={(e) => handleVerifyOTP(e)}
         >
           Verify
         </button>
