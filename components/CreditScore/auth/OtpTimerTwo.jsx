@@ -66,7 +66,7 @@ const OtpTimerTwo = ({ reSendOtp, verifyOtp }) => {
     startTimer(initialTimerDuration); // Start a fresh timer
 
     // Call resend otp api function
-    reSendOtp();
+    // reSendOtp();
   };
 
   return (
@@ -84,7 +84,7 @@ const OtpTimerTwo = ({ reSendOtp, verifyOtp }) => {
         <button
           type="button"
           onClick={handleResendOtp} // Trigger the resend OTP logic
-          className="w-full rounded-lg px-4 py-2 text-sm text-blue-500"
+          className="w-[110px] rounded-lg px-4 text-sm text-blue-500 hover:text-blue-800"
         >
           Resend OTP
         </button>

@@ -12,7 +12,9 @@ const CreditOtpValidation = ({
   utmSource,
   utmMedium,
   platform,
+  mobile,
   verifyOtp,
+  setFormState,
 }) => {
   const [otpValues, setOtpValues] = useState(Array(totalDigits).fill(""));
   const inputRefs = useRef([]);
@@ -45,7 +47,7 @@ const CreditOtpValidation = ({
   const [state, setState] = useState({
     loading: false,
     message: "",
-    canVerifyOtp: true,
+    canVerifyOtp: false,
   });
   const [userData, setUserData] = useState("");
   // console.log("userData", userData);
@@ -129,8 +131,16 @@ const CreditOtpValidation = ({
     if (newOtpValues.every((digit) => digit !== "")) {
       const enteredOtp = newOtpValues.join("");
       console.log("enteredOtp", enteredOtp);
-
+      setState((prev) => ({
+        ...prev,
+        canVerifyOtp: true,
+      }));
       //   handleOtpVerification(enteredOtp);
+    } else {
+      setState((prev) => ({
+        ...prev,
+        canVerifyOtp: false,
+      }));
     }
   };
 
@@ -255,7 +265,22 @@ const CreditOtpValidation = ({
   }, [userData]);
 
   const handleEditClick = () => {
-    console.log("edit clicked");
+    // Update the form state to reflect that the modal is open
+    setFormState((prev) => {
+      const updatedState = {
+        ...prev,
+        isModalOpen: false,
+      };
+
+      // Store the updated state in sessionStorage
+      sessionStorage.setItem("u_data", JSON.stringify(updatedState));
+
+      return updatedState;
+    });
+  };
+
+  const maskMobileNumber = (number) => {
+    return "xxxxxxx" + number?.slice(-4);
   };
 
   return (
@@ -264,8 +289,8 @@ const CreditOtpValidation = ({
         <h2 className="font-Poppins text-2xl text-black">
           Verify Mobile Number
         </h2>
-        <p className="flex items-center justify-center py-3 text-center text-sm text-gray-500">
-          OTP sent on Mobile Number +91-xxxxxxx1234
+        <p className="my-3 flex items-center justify-center rounded-sm px-0 text-center text-sm text-gray-500">
+          OTP sent on Mobile Number +91-{maskMobileNumber(mobile)}
           <button
             className="flex items-center justify-center ps-2 text-[#1E4AE9] transition-colors hover:text-black"
             onClick={handleEditClick}
@@ -340,19 +365,26 @@ const CreditOtpValidation = ({
         </div>
         {/* )} */}
 
+        {/* Verify Button */}
         <button
-          type="button"
-          className="w-[180px] w-full rounded-xl p-1 text-[20px] font-bold text-white shadow-[0px_4.06px_4.06px_-2.03px_rgba(0,0,0,0.48)]"
+          type="submit"
+          className={`my-3 w-[160px] rounded-xl py-2 text-[20px] font-bold text-white ${
+            state.canVerifyOtp ? "" : "cursor-not-allowed opacity-50"
+          }`}
           style={{
-            background:
-              "radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%)",
+            background: state.canVerifyOtp
+              ? "radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%)"
+              : "gray",
           }}
+          disabled={true}
         >
           Verify
         </button>
 
         <div>
-          <span>By logging in, you agree to the following</span>
+          <span className="text-xs text-black">
+            By logging in, you agree to the following
+          </span>
           <div className="text-center text-xs text-[#58C4FF]">
             <span className="inline-block cursor-pointer hover:underline">
               About Us

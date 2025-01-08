@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreditAuthHeader from "./CreditAuthHeader";
 import InputTwo from "@/components/Common/InputTwo";
 import { useFormValidation } from "@/hooks/useValidation";
@@ -8,18 +8,18 @@ import CreditScoreFAQ from "@/mock/CreditScoreFAQ";
 import CreditOtpValidation from "./CreditOtpValidation";
 
 const CreditAuth = () => {
+  // Form fields and state
   const fields = ["fullName", "email", "mobileNumber"];
   const [formState, setFormState] = useState({
-    mobile: "",
-    isValid: true,
-    showOtpInput: false,
-    isEditable: true,
+    fullName: "",
+    email: "",
+    mobileNumber: "",
+    userConsent: true,
+    isModalOpen: false,
     verifyOtp: false,
-    errorMessage: "",
-    isTransitioning: false,
-    showNextBtn: false,
-    userConsentCheck: true,
   });
+  const [errorMsg, setErrorMsg] = useState("");
+
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -28,62 +28,92 @@ const CreditAuth = () => {
     trigger,
   } = useFormValidation(fields);
 
-  // Handle form field change
-  const handleChange = (field) => async (e) => {
-    const value = e.target.value;
+  useEffect(() => {
+    // Retrieve data from sessionStorage on component mount
+    const storedData = sessionStorage.getItem("u_data");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      Object.keys(parsedData).forEach((field) => {
+        updateFormField(field, parsedData[field]);
+      });
+    }
+  }, []);
+
+  // Function to update a specific field in the form state
+  const updateFormField = (field, value) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
     setValue(field, value);
-    trigger(field);
   };
 
-  // Toogle user consent
-  const toggleUserConsent = () => {
+  // Handle form field changes
+  const handleChange = (field) => async (e) => {
+    const value = e.target.value;
+    setValue(field, value); // Update form validation state
+    trigger(field); // Trigger field validation
+
     setFormState((prev) => ({
       ...prev,
-      userConsentCheck: !formState.userConsentCheck,
+      [field]: value,
     }));
   };
 
-  // Form submission
-  const onSubmit = (data) => {
-    // const payload = new URLSearchParams({
-    //   mobile_no: mobile,
-    //   coloumn_name: "email",
-    //   coloumn_value: data.email,
-    // });
-
-    console.log("data", data);
+  // Toggle user consent checkbox
+  const toggleUserConsent = () => {
+    setFormState((prev) => ({
+      ...prev,
+      userConsent: !prev.userConsent,
+    }));
   };
 
-  const [isModalOpen, setModalOpen] = useState(false);
+  // Manage consent error message
+  useEffect(() => {
+    setErrorMsg(
+      formState.userConsent ? "" : "Please select consent to proceed",
+    );
+  }, [formState.userConsent]);
 
-  const openModal = () => setModalOpen(true);
-  const closeModal = () => setModalOpen(false);
+  const onSubmit = (data) => {
+    console.log("Submitted data:", data);
 
-  const Modal = ({ isOpen, closeModal }) => {
+    const updatedState = {
+      ...formState,
+      isModalOpen: true,
+    };
+
+    // Store the updated state in sessionStorage
+    sessionStorage.setItem("u_data", JSON.stringify(updatedState));
+
+    // Update the formState
+    setFormState((prev) => ({
+      ...prev,
+      isModalOpen: true,
+      verifyOtp: true,
+    }));
+  };
+
+  // OTP Modal component
+  const OTPModal = ({ isOpen }) => {
     if (!isOpen) return null;
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="relative w-full max-w-sm rounded-lg bg-white p-4">
-          {/* Close Button */}
-          <button
-            onClick={closeModal}
-            className="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
-          >
-            &times;
-          </button>
-          {/* OTP Validation */}
+        <div className="relative m-2 w-full max-w-md rounded-3xl bg-white p-8">
           <CreditOtpValidation
-            utmSource={""}
-            utmMedium={""}
-            platform={""}
-            mobile={""}
-            verifyOtp={""}
+            utmSource=""
+            utmMedium=""
+            platform=""
+            mobile={formState?.mobileNumber}
+            verifyOtp={formState?.verifyOtp}
+            setFormState={setFormState}
           />
         </div>
       </div>
     );
   };
+
   return (
     <div>
       <CreditAuthHeader />
@@ -98,146 +128,108 @@ const CreditAuth = () => {
               Get Detailed Credit Report Insights & Customized Loan Offers!
             </p>
 
-            <div className="mt-[20px] max-w-[450px]">
-              <form className="space-y-5">
-                <InputTwo
-                  type="text"
-                  placeholder="Full Name"
-                  value={watch("fullName")}
-                  onChange={handleChange("fullName")}
-                  error={errors.fullName?.message}
-                />
-                <InputTwo
-                  type="text"
-                  placeholder="Email ID"
-                  value={watch("email") || ""}
-                  onChange={handleChange("email")}
-                  error={errors.email?.message}
-                />
-                <InputTwo
-                  type="number"
-                  placeholder="Mobile Number"
-                  value={watch("mobileNumber") || ""}
-                  onChange={handleChange("mobileNumber")}
-                  maxLength={10}
-                  error={errors.mobileNumber?.message}
-                />
-                {/* Consent */}
-                <div className="flex items-start space-x-2">
-                  <input
-                    type="checkbox"
-                    id="user_consent"
-                    checked={formState.userConsentCheck}
-                    onChange={toggleUserConsent}
-                    className="size-5 rounded-md border-2 border-gray-300 transition-all duration-200 ease-in-out focus:outline-none"
-                  />
-                  <label className="text-xs text-black" htmlFor="user_consent">
-                    I hereby appoint Buddy Loan as my authorised representative
-                    to receive my credit information from Experian (bureau) on
-                    an ongoing basis until the purpose of Pulling the Bureau
-                    Score to push the lead to the lending partner associated
-                    with Buddy Loan ("End Use Purpose") is satisfied or expiry
-                    of 6 months from the date the consent is collected;
-                    {/* <a
-                      href="https://www.buddyloan.com/terms-and-conditions"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="ps-1 font-semibold text-bl-blue no-underline"
-                    >
-                      Terms & Conditions
-                    </a>{" "}
-                    and
-                    <a
-                      href="https://www.buddyloan.com/privacy-policy"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="ps-1 font-semibold text-bl-blue no-underline"
-                    >
-                      Privacy Policy
-                    </a> */}
-                  </label>
-                </div>
-                {/* Get OTP Button */}
-                <button
-                  type="button"
-                  onClick={openModal}
-                  className="w-full rounded-xl p-1 text-[28px] font-bold text-white shadow-[0px_4.06px_4.06px_-2.03px_rgba(0,0,0,0.48)]"
-                  style={{
-                    background:
-                      "radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%)",
-                  }}
-                >
-                  Get OTP
-                </button>
-              </form>
+            <form
+              className="mt-[20px] max-w-[450px] space-y-5"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              {/* Full Name */}
+              <InputTwo
+                type="text"
+                placeholder="Full Name"
+                value={watch("fullName") || formState.fullName}
+                onChange={handleChange("fullName")}
+                error={errors.fullName?.message}
+              />
 
-              <Modal isOpen={isModalOpen} closeModal={closeModal} />
+              {/* Email */}
+              <InputTwo
+                type="text"
+                placeholder="Email ID"
+                value={watch("email") || formState.email}
+                onChange={handleChange("email")}
+                error={errors.email?.message}
+              />
 
-              <div className="py-4">
-                <div className="flex items-center justify-start py-1">
-                  <span className="pe-2">
-                    <img
-                      src="/credit-score/credit-small.png"
-                      alt="Credit Meter"
-                      //   className="h-4 w-8" // Add dimensions to control size if necessary
-                    />
-                  </span>
-                  <div className="text-sm text-black">
-                    Your data is protected by encryption methods
-                  </div>
-                </div>
+              {/* Mobile Number */}
+              <InputTwo
+                type="number"
+                placeholder="Mobile Number"
+                value={watch("mobileNumber") || formState.mobileNumber}
+                onChange={handleChange("mobileNumber")}
+                maxLength={10}
+                error={errors.mobileNumber?.message}
+              />
 
-                <div className="flex items-center justify-start">
-                  <span className="pe-2">
-                    <img
-                      src="/credit-score/security-icon.png"
-                      alt="Credit Meter"
-                      //   className="h-4 w-8" // Add dimensions to control size if necessary
-                    />
-                  </span>
-                  <div className="text-sm text-black">
-                    No effect to your credit score{" "}
-                  </div>
-                </div>
+              {/* Consent */}
+              <div className="flex items-start space-x-2 pb-2">
+                <input
+                  type="checkbox"
+                  id="user_consent"
+                  checked={formState.userConsent}
+                  onChange={toggleUserConsent}
+                  className="size-5 rounded-md border-2 border-gray-300 transition-all duration-200 ease-in-out focus:outline-none"
+                />
+                <label className="text-xs text-black" htmlFor="user_consent">
+                  I hereby appoint Buddy Loan as my authorised representative to
+                  receive my credit information from Experian (bureau) on an
+                  ongoing basis until the purpose of Pulling the Bureau Score to
+                  push the lead to the lending partner associated with Buddy
+                  Loan ("End Use Purpose") is satisfied or expiry of 6 months
+                  from the date the consent is collected; whichever is{" "}
+                </label>
               </div>
-            </div>
+
+              {/* Consent Error */}
+              {errorMsg && (
+                <span className="text-sm text-red-500">{errorMsg}</span>
+              )}
+
+              {/* Get OTP Button */}
+              <button
+                type="submit"
+                className={`w-full rounded-xl p-1 text-[28px] font-bold text-white ${
+                  formState.userConsent ? "" : "cursor-not-allowed opacity-50"
+                }`}
+                style={{
+                  background: formState.userConsent
+                    ? "radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%)"
+                    : "gray",
+                }}
+                disabled={!formState.userConsent}
+              >
+                Get OTP
+              </button>
+            </form>
+
+            <OTPModal isOpen={formState?.isModalOpen} />
           </div>
 
           {/* Right Section */}
           <div className="relative flex-1 text-center text-white">
-            <div className="mt-[40px] flex flex-col items-start justify-start space-y-6">
-              {/* Credit Scrore Meter */}
-              <div>
-                <img src="/credit-score/credit-meter.svg" alt="Credit Meter" />
-              </div>
-
-              {/* Credit Features */}
-              <div>
-                <img
-                  src="/credit-score/credit-features.svg"
-                  alt="Credit Meter"
-                />
-              </div>
+            <div className="mt-[40px] flex flex-col items-start space-y-6">
+              <img src="/credit-score/credit-meter.svg" alt="Credit Meter" />
+              <img
+                src="/credit-score/credit-features.svg"
+                alt="Credit Features"
+              />
             </div>
           </div>
         </div>
 
+        {/* Footer Links */}
         <div className="pt-10 text-center">
-          <span className="inline-block cursor-pointer hover:underline">
-            About Us
-          </span>
+          <span className="cursor-pointer hover:underline">About Us</span>
           <span className="mx-2">|</span>
-          <span className="inline-block cursor-pointer hover:underline">
-            Privacy Policy
-          </span>
+          <span className="cursor-pointer hover:underline">Privacy Policy</span>
           <span className="mx-2">|</span>
-          <span className="inline-block cursor-pointer hover:underline">
+          <span className="cursor-pointer hover:underline">
             Terms & Conditions
           </span>
         </div>
       </div>
 
-      <div className="container mx-auto p-6 pt-10 text-center text-justify">
+      {/* Credit Score Information */}
+      <div className="container mx-auto p-6 text-justify">
         <p className="py-2">
           Everything You Need to Know About Your Credit Score! Your credit score
           is a crucial factor that can open doors to various financial
@@ -315,8 +307,9 @@ const CreditAuth = () => {
         </p>
       </div>
 
+      {/* FAQ Section */}
       <div className="container mx-auto p-6">
-        <FaqSection faqData={CreditScoreFAQ} heading={"Credit Score FAQ"} />
+        <FaqSection faqData={CreditScoreFAQ} heading="Credit Score FAQ" />
       </div>
     </div>
   );
