@@ -104,18 +104,21 @@ const CreditOtpValidation = ({
       toast.success(response?.message); // sucess toast
       verifyUsers(response?.user_token);
       setUserData(response);
+
       // Update the form state to reflect that the modal is open
-      setFormState((prev) => {
-        const updatedState = {
-          ...prev,
-          isUserAuthSuccess: true,
-        };
+      setTimeout(() => {
+        setFormState((prev) => {
+          const updatedState = {
+            ...prev,
+            isUserAuthSuccess: true,
+          };
 
-        // Store the updated state in sessionStorage
-        sessionStorage.setItem("u_data", JSON.stringify(updatedState));
+          // Store the updated state in sessionStorage
+          sessionStorage.setItem("u_data", JSON.stringify(updatedState));
 
-        return updatedState;
-      });
+          return updatedState;
+        });
+      }, 1000);
       return;
     }
 

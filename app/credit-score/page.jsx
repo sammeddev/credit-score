@@ -42,7 +42,10 @@ const Page = () => {
   return (
     <div>
       {/* Header */}
-      <CreditAuthHeader />
+      <CreditAuthHeader
+        isLoggedIn={formState?.isUserAuthSuccess}
+        setFormState={setFormState}
+      />
 
       {/* Content */}
       {loading ? (
