@@ -7,6 +7,7 @@ const CalendarInput = ({
   onDateChange,
   error,
   selectedDates,
+  placeholder,
 }) => {
   const [selectedDate, setSelectedDate] = useState(initialSelectedDate);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -102,17 +103,19 @@ const CalendarInput = ({
 
   return (
     <div className="relative w-full" ref={calendarRef}>
-      <span className="pointer-events-none absolute left-3 top-0 -translate-y-1/2 bg-white px-1 text-[#47B6F2]">
-        {label}
-      </span>
-
       <div
-        className={`mt-2 flex h-[47.47px] w-full cursor-pointer items-center rounded-[12px] border px-3 ${
+        className={`mt-2 flex h-[47.47px] w-full cursor-pointer items-center rounded-[12px] border border-[#DCDBDD] px-3 ${
           error ? "border-red-500" : "border-[#47B6F2]"
-        } focus:outline-none focus:ring-2 focus:ring-[#47B6F2]`}
+        } bg-white focus:outline-none focus:ring-2 focus:ring-[#47B6F2]`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="text-gray-700">{formatDate(selectedDate)}</span>
+        <span className="text-gray-700">
+          {selectedDate ? (
+            formatDate(selectedDate)
+          ) : (
+            <span className="text-[#84818A]">{placeholder}</span>
+          )}
+        </span>
         <button
           type="button"
           className="ml-auto flex items-center justify-center"
@@ -144,7 +147,7 @@ const CalendarInput = ({
             <select
               value={currentYear}
               onChange={handleYearChange}
-              className="rounded border p-1 text-gray-700"
+              className="rounded border bg-white p-1 text-gray-700"
             >
               {years.map((year) => (
                 <option key={year} value={year}>

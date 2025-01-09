@@ -28,6 +28,6 @@
     ".next/types/**/*.ts",
     "components/Common/CalendarInput.jsx",
     "components/Common/FaqSection.js"
-  ],
+, "components/Common/Input.jsx", "components/Common/Dropdown.jsx"  ],
   "exclude": ["node_modules"]
 }

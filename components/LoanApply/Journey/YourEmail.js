@@ -7,7 +7,7 @@ import { useFormValidation } from "@/hooks/useValidation";
 import Button from "@/components/Common/Button";
 import { useUserContext } from "../../../utils/UserContext";
 import { encryptData, decryptData } from "@/utils/cryptoUtils"; // Import the functions
-import { userSearch,checkEmailDelivery,partialSubmit } from "@/api/user";
+import { userSearch, checkEmailDelivery, partialSubmit } from "@/api/user";
 
 const SecondStep = ({ onClick }) => {
   const router = useRouter();
@@ -19,7 +19,7 @@ const SecondStep = ({ onClick }) => {
   const [mobile, setUserMobile] = useState("");
   const [amount, setAmount] = useState("");
   const [message, setMessage] = useState("");
-  const[userType,setUserType] = useState("");
+  const [userType, setUserType] = useState("");
 
   const fields = ["loan_amount", "email"];
   const {
@@ -48,7 +48,7 @@ const SecondStep = ({ onClick }) => {
     if (!userToken) {
       console.error("User token is undefined.");
       setMessage("❌ User token is not available.");
-      router.push("/apply-loan-online/");
+      // router.push("/apply-loan-online/");
       return;
     }
 
@@ -65,14 +65,12 @@ const SecondStep = ({ onClick }) => {
     // console.log("Payload being Verification:", payload.toString());
 
     try {
-    const response = await userSearch(payload);
-     const responseData = decryptData(response.data.encryptData); // Parse response as JSON
+      const response = await userSearch(payload);
+      const responseData = decryptData(response.data.encryptData); // Parse response as JSON
       // console.log("user search", responseData);
-      const userData = responseData
-        ? responseData
-        : null;
+      const userData = responseData ? responseData : null;
       if (userData?.HTTPStatus === 200 && userData.status === "success") {
-        setUserType(userData.user_type)
+        setUserType(userData.user_type);
         setUserId(userData.user[0].id);
         setUserMobile(userData.user[0].mobile);
         Object.keys(userData.user[0]).forEach((field) => {
@@ -84,8 +82,6 @@ const SecondStep = ({ onClick }) => {
       setMessage("❌ Error verifying user. Please try again later.");
     }
   };
-
-  
 
   // Handle email input change and validation
   const handleChange = (field) => (e) => {
@@ -139,30 +135,24 @@ const SecondStep = ({ onClick }) => {
     });
 
     try {
-
-      
-      console.log(userType)
-      if(userType === "0"){  
-        setMessage("✅ Data saved successfully."); 
+      console.log(userType);
+      if (userType === "0") {
+        setMessage("✅ Data saved successfully.");
         sessionStorage.setItem("journey", 2);
         setSteps(2);
-        }
-        else{
-          const response = await partialSubmit(payload);
-          console.log(response)
-          console.log(response.data.msg)
-          sessionStorage.setItem("journey", 2);
-          setSteps(2);
-          setMessage("✅ Data saved successfully1.");  
-        }
-      
-         } catch (error) {
+      } else {
+        const response = await partialSubmit(payload);
+        console.log(response);
+        console.log(response.data.msg);
+        sessionStorage.setItem("journey", 2);
+        setSteps(2);
+        setMessage("✅ Data saved successfully1.");
+      }
+    } catch (error) {
       console.error("Form submission error:", error);
       setMessage(`❌ Form submission error: ${error.message}`);
-     }
-
     }
-
+  };
 
   const handleRadioChange = (value) => {
     setSelectedLoanType(value);
