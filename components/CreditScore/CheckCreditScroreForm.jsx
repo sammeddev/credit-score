@@ -1,16 +1,16 @@
 import { useFormValidation } from "@/hooks/useValidation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import InputTwo from "../Common/InputTwo";
-import CalendarInput from "../Common/CalendarInput";
+import CalendarInputTwo from "../Common/CalendarInputTwo";
 import Dropdown from "../Common/Dropdown";
-import Input from "../Common/Input";
 import CreditScroreInfo from "./CreditScroreInfo";
+import { useRouter } from "next/navigation";
 
 const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
   // Form fields and state
   const fields = ["dob", "panCard", "pincode", "companyType"];
-
   const [fetchScoreLoading, setFetchScoreLoading] = useState(false);
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -19,30 +19,6 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
     watch,
     trigger,
   } = useFormValidation(fields);
-
-  useEffect(() => {
-    setLoading(true);
-    // Retrieve data from sessionStorage on component mount
-    const storedData = sessionStorage.getItem("u_data");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      Object.keys(parsedData).forEach((field) => {
-        updateFormField(field, parsedData[field]);
-      });
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
-  // Function to update a specific field in the form state
-  const updateFormField = (field, value) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-    setValue(field, value);
-  };
 
   // Handle form field changes
   const handleChange = (field) => async (e) => {
@@ -66,7 +42,6 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
   const handleDateChange = (field, date) => {
     setValue(field, date);
     trigger(field);
-    console.log("date", date);
   };
 
   // Callback to dropdown change
@@ -81,6 +56,7 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
 
     setTimeout(() => {
       setFetchScoreLoading(false);
+      router.push("/dashboard");
     }, 3000);
   };
 
@@ -149,9 +125,9 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
                   onSubmit={handleSubmit(onSubmit)}
                 >
                   {/* DOB */}
-                  <CalendarInput
+                  <CalendarInputTwo
                     placeholder="Date of Birth"
-                    value={watch("dob") || null}
+                    value={watch("dob") || formState?.dob}
                     onDateChange={(date) => {
                       handleDateChange("dob", date);
                     }}
@@ -163,7 +139,7 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
                     // type={isPanVisible ? "text" : "password"}
                     type="text"
                     placeholder="Pan Card"
-                    value={watch("panCard")}
+                    value={watch("panCard") || formState?.pancard}
                     maxLength={10}
                     onChange={(e) => {
                       const uppercasedValue = e.target.value.toUpperCase(); // Auto-capitalize
@@ -176,7 +152,7 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
                   <InputTwo
                     type="text"
                     placeholder="Pincode"
-                    value={watch("pincode") || ""}
+                    value={watch("pincode") || formState?.pincode}
                     maxLength={6}
                     onChange={handleChange("pincode")}
                     error={errors.pincode?.message}
@@ -191,7 +167,7 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
                       "Proprietorship",
                       "Others",
                     ]}
-                    selected={watch("companyType") || ""}
+                    selected={watch("companyType") || formState?.companyType}
                     placeholder="Employment Type"
                     onChange={(value) =>
                       handleDropdownChange("companyType", value)
