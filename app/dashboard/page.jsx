@@ -1,9 +1,17 @@
 import React from "react";
+import CreditScoreHeader from "@/components/CreditScore/components/CreditScoreHeader";
+import CreditSidebar from "@/components/CreditScore/components/CreditSidebar";
+import CreditRightSection from "@/components/CreditScore/CreditRightSection";
 
 const Page = () => {
   return (
-    <div className="flex items-center justify-center">
-      <h1 className="text-3xl text-black">Page</h1>
+    <div className="container mx-auto flex flex-col items-center justify-center space-y-6 pt-8">
+      <CreditScoreHeader />
+
+      <div className="flex w-full items-start justify-start md:space-x-6">
+        <CreditSidebar />
+        <CreditRightSection />
+      </div>
     </div>
   );
 };
