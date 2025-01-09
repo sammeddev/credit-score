@@ -328,9 +328,7 @@ const CreditOtpValidation = ({
   return (
     <div className="mx-auto max-w-sm text-center">
       <div>
-        <h2 className="font-Poppins text-2xl text-black">
-          Verify Mobile Number
-        </h2>
+        <h2 className="text-2xl text-black">Verify Mobile Number</h2>
         <p className="my-3 flex items-center justify-center rounded-sm px-0 text-center text-sm text-gray-500">
           OTP sent on Mobile Number +91-{maskMobileNumber(mobile)}
           <button
@@ -366,7 +364,7 @@ const CreditOtpValidation = ({
               onChange={(e) => handleInputChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               // onPaste={handlePaste}
-              className="block size-12 rounded-lg border border-gray-300 text-center text-sm font-extrabold font-semibold text-black focus:border-bl-blue focus:ring-2 focus:ring-bl-blue"
+              className="block size-12 rounded-lg border border-gray-300 text-center text-sm font-semibold text-black focus:border-bl-blue focus:ring-2 focus:ring-bl-blue"
             />
           ))}
         </div>

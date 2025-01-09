@@ -169,9 +169,9 @@ const CreditAuth = ({ formState, setFormState, setLoading }) => {
                     to receive my credit information from Experian (bureau) on
                     an ongoing basis until the purpose of Pulling the Bureau
                     Score to push the lead to the lending partner associated
-                    with Buddy Loan ("End Use Purpose") is satisfied or expiry
-                    of 6 months from the date the consent is collected;
-                    whichever is{" "}
+                    with Buddy Loan (&quot;End Use Purpose&quot;) is satisfied
+                    or expiry of 6 months from the date the consent is
+                    collected; whichever is{" "}
                   </label>
                 </div>
 

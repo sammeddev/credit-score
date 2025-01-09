@@ -22,7 +22,7 @@ const CreditScroreInfo = () => {
         interest rates. You can check your credit score for free from Buddy
         Score. It provides a quick and easy way to obtain your credit score
         evaluation report. By taking control of your credit score, you can open
-        doors to better financial opportunities. Whether you're planning
+        doors to better financial opportunities. Whether you&apos;re planning
         to apply for a personal loan, car loan, or credit card, having a solid
         credit score will give you the confidence to negotiate favourable terms
         and secure the best possible financial outcomes.
@@ -46,7 +46,7 @@ const CreditScroreInfo = () => {
         interest rates. You can check your credit score for free from Buddy
         Score. It provides a quick and easy way to obtain your credit score
         evaluation report. By taking control of your credit score, you can open
-        doors to better financial opportunities. Whether you're planning
+        doors to better financial opportunities. Whether you&apos;re planning
         to apply for a personal loan, car loan, or credit card, having a solid
         credit score will give you the confidence to negotiate favourable terms
         and secure the best possible financial outcomes.
@@ -70,7 +70,7 @@ const CreditScroreInfo = () => {
         interest rates. You can check your credit score for free from Buddy
         Score. It provides a quick and easy way to obtain your credit score
         evaluation report. By taking control of your credit score, you can open
-        doors to better financial opportunities. Whether you're planning
+        doors to better financial opportunities. Whether you&apos;re planning
         to apply for a personal loan, car loan, or credit card, having a solid
         credit score will give you the confidence to negotiate favourable terms
         and secure the best possible financial outcomes.
