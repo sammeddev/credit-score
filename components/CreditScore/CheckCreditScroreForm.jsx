@@ -5,6 +5,7 @@ import CalendarInputTwo from "../Common/CalendarInputTwo";
 import Dropdown from "../Common/Dropdown";
 import CreditScroreInfo from "./CreditScroreInfo";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
   // Form fields and state
@@ -55,8 +56,8 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
     setFetchScoreLoading(true);
 
     setTimeout(() => {
-      setFetchScoreLoading(false);
       router.push("/dashboard");
+      toast.success("Your credit score has been successfully retrieved.");
     }, 3000);
   };
 
@@ -211,7 +212,7 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
               </div>
 
               {/* Right Section */}
-              <div className="relative flex hidden items-end justify-end text-center text-white md:block">
+              <div className="relative hidden text-white md:block">
                 <div className="flex items-end justify-end">
                   <img
                     src="/credit-score/banner-1.svg"
