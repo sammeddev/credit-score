@@ -17,7 +17,9 @@ const config: Config = {
         'custom-radial-gradient': 'radial-gradient(97.81% 97.81% at 49.04% 98.81%, #008ACF 9%, #58B8F3 100%)',
       },
       boxShadow: {
-        custom: "0px 0px 4px 0px rgba(0, 0, 0, 0.25)", // equivalent to #00000040
+        custom: "0px 0px 4px 0px rgba(0, 0, 0, 0.25)",
+        // shadowCommon:"0px 2px 19px 0px #EDEDED",
+        shadowCommon:"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px"
       },
     },
   },

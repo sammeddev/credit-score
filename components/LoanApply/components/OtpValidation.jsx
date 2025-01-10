@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect, memo } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { resendOTP, userSearch, verifyOTP } from "@/api/user";
