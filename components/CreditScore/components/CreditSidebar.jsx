@@ -79,7 +79,7 @@ const CreditSidebar = () => {
   ];
 
   return (
-    <div className="shadow-shadowCommon hidden w-full max-w-[300px] rounded-xl bg-white p-4 md:block">
+    <div className="hidden w-[300px]  rounded-xl bg-white p-4 shadow-shadowCommon md:block">
       <ul>
         {items.map((item, index) => (
           <li key={index} className="mb-4">

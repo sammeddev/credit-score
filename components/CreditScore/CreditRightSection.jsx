@@ -30,17 +30,17 @@ const CreditRightSection = () => {
   return (
     <div>
       {/* Credit Score Banner */}
-      <div className="flex w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-shadowCommon">
+      <div className="flex w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-shadowCommon md:flex-row md:items-start md:space-x-6">
         <CreditScoreBanner />
       </div>
 
       {/* Offers Card */}
-      <div className="my-5 w-full w-full overflow-hidden rounded-lg">
+      <div className="my-5 w-full overflow-hidden rounded-lg">
         {/* Header Curve */}
         <div className="font-500 flex h-[80px] w-full items-center justify-start bg-[url('/credit-score/curve-bg.png')] bg-no-repeat px-6 text-[25px] text-white">
           Pre Approved Offers
         </div>
-        <div className="flex items-center justify-around space-x-5 rounded-r-lg border p-4 shadow">
+        <div className="flex flex-col items-center justify-around space-y-5 rounded-r-lg border p-4 shadow lg:flex-row lg:space-x-5">
           {offers.map((offer, index) => (
             <OfferCard
               key={index}
