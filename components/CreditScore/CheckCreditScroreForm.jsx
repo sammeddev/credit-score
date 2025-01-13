@@ -67,7 +67,7 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
         <div
           className="animate-spin"
           style={{
-            animationDuration: "1.5s", // Speed of the spin
+            animationDuration: "2s", // Speed of the spin
           }}
         >
           <img
