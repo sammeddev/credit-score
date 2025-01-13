@@ -48,15 +48,6 @@ const CreditSidebar = () => {
       ],
     },
     {
-      label: "Compare Loan Offers",
-      icon: "/credit-score/compare.png",
-      alt: "compare-icon",
-      children: [
-        { label: "Loan Offers", icon: "💰" },
-        { label: "Credit Cards", icon: "💳" },
-      ],
-    },
-    {
       label: "Credit Cards",
       icon: "/credit-score/credit-card.png",
       alt: "credit-icon",
@@ -65,15 +56,6 @@ const CreditSidebar = () => {
       label: "Insurance",
       icon: "/credit-score/insurance.png",
       alt: "insurance-icon",
-    },
-    {
-      label: "Loans",
-      icon: "/credit-score/loans.png",
-      alt: "loan-icon",
-      children: [
-        { label: "Loan Offers", icon: "💰" },
-        { label: "Credit Cards", icon: "💳" },
-      ],
     },
     { label: "FAQs", icon: "/credit-score/faq.png", alt: "faq-icon" },
   ];

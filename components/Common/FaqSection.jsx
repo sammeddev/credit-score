@@ -60,7 +60,12 @@ const FaqSection = ({ faqData, heading }) => {
   return (
     <div className="mx-auto max-w-full">
       {/* Header Curve */}
-      <div className="font-500 flex h-[80px] w-full items-center justify-start bg-[url('/credit-score/curve-bg.png')] bg-no-repeat px-6 text-[25px] text-white">
+      <div
+        className="relative inline-block bg-[#4ab0ff] px-[20px] py-2 pe-[80px] text-center text-lg font-bold text-white lg:py-4 lg:pe-[130px] lg:text-[32px]"
+        style={{
+          clipPath: "polygon(0 0, 70% 0, 85% 100%, 0 100%)",
+        }}
+      >
         {heading}
       </div>
 
