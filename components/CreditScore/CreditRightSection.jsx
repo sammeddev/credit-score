@@ -2,9 +2,13 @@
 import React from "react";
 import CreditScoreBanner from "./components/CreditScoreBanner";
 import OfferCard from "./components/OfferCard";
+import CreditCard from "./components/CreditCard";
+import WrapperWithHeader from "./components/CardWrapperWithHeader";
+import FaqSection from "../Common/FaqSection";
+import CreditScoreFAQ from "@/mock/CreditScoreFAQ";
 
 const CreditRightSection = () => {
-  const offers = [
+  const preApproverdOffers = [
     {
       color: "#233A8A",
       amount: "5 Lakhs",
@@ -27,6 +31,17 @@ const CreditRightSection = () => {
       emi: "11,377",
     },
   ];
+  const ccOffers = [
+    {
+      img: "/credit-score/credit-card2.png",
+    },
+    {
+      img: "/credit-score/credit-card2.png",
+    },
+    {
+      img: "/credit-score/credit-card2.png",
+    },
+  ];
   return (
     <div>
       {/* Credit Score Banner */}
@@ -34,31 +49,20 @@ const CreditRightSection = () => {
         <CreditScoreBanner />
       </div>
 
-      {/* Offers Card */}
-      <div className="my-5 w-full overflow-hidden rounded-lg">
-        {/* Header Curve */}
-        <div
-          className="relative inline-block bg-[#4ab0ff] px-[20px] py-2 pe-[80px] text-center text-lg font-bold text-white lg:py-4 lg:pe-[130px] lg:text-[32px]"
-          style={{
-            clipPath: "polygon(0 0, 70% 0, 85% 100%, 0 100%)",
-          }}
-        >
-          Pre Approved Offers
-        </div>
+      {/* Pre Approverd Offers Cards */}
+      <WrapperWithHeader headerText={"Pre Approved Offers"}>
+        <OfferCard data={preApproverdOffers} />
+      </WrapperWithHeader>
 
-        <div className="flex flex-col items-center justify-around space-y-5 rounded-r-lg border p-4 shadow lg:flex-row lg:space-x-5 lg:space-y-0">
-          {offers.map((offer, index) => (
-            <OfferCard
-              key={index}
-              color={offer.color}
-              amount={offer.amount}
-              tenure={offer.tenure}
-              interestRate={offer.interestRate}
-              emi={offer.emi}
-            />
-          ))}
-        </div>
-      </div>
+      {/* Credit Card Offers Cards */}
+      <WrapperWithHeader headerText={"Pre Approved Offers"}>
+        <CreditCard data={ccOffers} />
+      </WrapperWithHeader>
+
+      {/* FAQ section */}
+      <WrapperWithHeader headerText={"Credit Score FAQ"}>
+        <FaqSection faqData={CreditScoreFAQ} />
+      </WrapperWithHeader>
     </div>
   );
 };

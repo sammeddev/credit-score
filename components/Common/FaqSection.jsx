@@ -58,43 +58,33 @@ const FaqSection = ({ faqData, heading }) => {
   }
 
   return (
-    <div className="mx-auto max-w-full">
-      {/* Header Curve */}
-      <div
-        className="relative inline-block bg-[#4ab0ff] px-[20px] py-2 pe-[80px] text-center text-lg font-bold text-white lg:py-4 lg:pe-[130px] lg:text-[32px]"
-        style={{
-          clipPath: "polygon(0 0, 70% 0, 85% 100%, 0 100%)",
-        }}
-      >
-        {heading}
-      </div>
-
+    <div className="mx-auto w-full">
       {/* Faq */}
-      <div className="rounded-md border p-4 px-8">
-        {faqData.map((item, index) => (
-          <div key={index} className="bg-white py-2">
-            <button
-              onClick={() => toggleFAQ(index)}
-              className="flex w-full items-center justify-between rounded-lg bg-white px-2 py-1 text-left shadow focus:outline-none"
-            >
-              <span className="font-semibold">{item.question}</span>
-              <span className="flex items-center justify-center rounded-full bg-[#47b6f2] text-center text-3xl font-semibold text-white">
-                {renderIcon(index)}
-              </span>
-            </button>
+      {faqData.map((item, index) => (
+        <div key={index} className="bg-white py-2">
+          <button
+            onClick={() => toggleFAQ(index)}
+            className="flex w-full items-center justify-between rounded-lg bg-white px-2 py-1 text-left shadow focus:outline-none"
+          >
+            <span className="text-xl font-semibold lg:text-2xl">
+              {item.question}
+            </span>
+            <span className="flex items-center justify-center rounded-full bg-[#47b6f2] text-center text-3xl font-semibold text-white">
+              {renderIcon(index)}
+            </span>
+          </button>
+          <div
+            className={`overflow-hidden shadow transition-[max-height] duration-300 ${
+              openIndex === index ? "max-h-[200px]" : "max-h-0"
+            }`}
+          >
             <div
-              className={`overflow-hidden shadow transition-[max-height] duration-300 ${
-                openIndex === index ? "max-h-[200px]" : "max-h-0"
-              }`}
-            >
-              <div
-                className="p-4 text-gray-700"
-                dangerouslySetInnerHTML={{ __html: item.answer }}
-              ></div>
-            </div>
+              className="p-4 text-gray-900"
+              dangerouslySetInnerHTML={{ __html: item.answer }}
+            ></div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
