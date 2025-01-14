@@ -32,7 +32,7 @@ const ReportInsights = ({ insightsData }) => {
               {/* 2nd & 3rd Section */}
               <div className="flex w-full items-center justify-between">
                 {/* 2rd Section */}
-                <div className="flex flex-col text-center text-start">
+                <div className="flex flex-col text-center">
                   <h2 className="text-2xl font-bold text-black">{value}</h2>
                   <span className="mt-[-2px] rounded-sm px-1 text-sm">
                     {subtitle}
