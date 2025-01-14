@@ -3,9 +3,9 @@ import React from "react";
 const CreditScoreBanner = () => {
   return (
     <div>
-      <div className="flex items-start justify-between">
+      <div className="flex w-full flex-col items-start justify-between space-y-6 md:items-center lg:flex-row lg:space-y-0">
         {/* Left */}
-        <div className="flex-1">
+        <div className="flex-1 text-center lg:text-left">
           <img
             src="/credit-score/credit-meter-2.svg"
             alt="credit-meter-icon"
@@ -23,7 +23,7 @@ const CreditScoreBanner = () => {
         </div>
 
         {/* Right */}
-        <div className="flex-1">
+        <div className="flex-1 text-center lg:text-left">
           <div className="space-y-2">
             <p className="text-2xl font-semibold text-[#44ADE9]">
               <span>Hey Rakesh,</span> <br />
@@ -41,8 +41,9 @@ const CreditScoreBanner = () => {
           </div>
         </div>
       </div>
+
       {/* Buttons Div */}
-      <div className="flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-4 lg:flex-row">
         {/* Download Report Button */}
         <button
           style={{

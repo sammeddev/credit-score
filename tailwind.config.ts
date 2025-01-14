@@ -18,8 +18,11 @@ const config: Config = {
       },
       boxShadow: {
         custom: "0px 0px 4px 0px rgba(0, 0, 0, 0.25)",
-        // shadowCommon:"0px 2px 19px 0px #EDEDED",
+        cardShadow: "rgba(0, 0, 0, 0.15) 0px 2px 8px",
         shadowCommon:"rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px"
+      },
+      scale: {
+        103: '1.03', // Custom scale value
       },
     },
   },
