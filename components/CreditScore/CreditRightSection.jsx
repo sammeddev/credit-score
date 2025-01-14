@@ -30,6 +30,13 @@ const CreditRightSection = () => {
       interestRate: "13",
       emi: "11,377",
     },
+    {
+      color: "#AE285D",
+      amount: "5 Lakhs",
+      tenure: "5 Years",
+      interestRate: "13",
+      emi: "11,377",
+    },
   ];
   const ccOffers = [
     {
@@ -41,9 +48,12 @@ const CreditRightSection = () => {
     {
       img: "/credit-score/credit-card2.png",
     },
+    {
+      img: "/credit-score/credit-card2.png",
+    },
   ];
   return (
-    <div>
+    <div className="w-full">
       {/* Credit Score Banner */}
       <div className="flex w-full flex-col items-center justify-between rounded-xl bg-white p-4 shadow-shadowCommon md:flex-row md:items-start md:space-x-6">
         <CreditScoreBanner />

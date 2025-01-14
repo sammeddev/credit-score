@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import CreditScoreHeader from "@/components/CreditScore/components/CreditScoreHeader";
 import CreditSidebar from "@/components/CreditScore/components/CreditSidebar";

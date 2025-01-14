@@ -13,9 +13,7 @@ const WrapperWithHeader = ({ headerText, children }) => {
         {headerText}
       </div>
       {/* Content Section */}
-      <div className="flex flex-col items-center justify-around space-y-5 rounded-r-lg border p-4 shadow lg:flex-row lg:space-x-5 lg:space-y-0">
-        {children}
-      </div>
+      {children}
     </div>
   );
 };
