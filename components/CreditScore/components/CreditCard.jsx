@@ -26,8 +26,11 @@ const CreditCard = ({ data }) => {
         {data?.map((item, index) => {
           const { img } = item;
           return (
-            <div className="card font-poppins hover:scale-103 w-full max-w-full flex-shrink-0 cursor-pointer rounded-[20px]  transition-transform  duration-300 lg:max-w-[302px]">
-              <img src={img} className="h-full w-[360px]" key={index} />
+            <div
+              key={index}
+              className="card font-poppins hover:scale-103 w-full max-w-full flex-shrink-0 cursor-pointer rounded-[20px]  transition-transform  duration-300 lg:max-w-[302px]"
+            >
+              <img src={img} className="h-full w-[360px]" />
             </div>
           );
         })}
