@@ -3,7 +3,10 @@ import React from "react";
 const ReferBanner = () => {
   return (
     <div className="w-full space-y-4 rounded-[20px] border border-[#2AA0E0] bg-[#EEF9FF] p-4 pb-0 text-center shadow">
+      {/* Title */}
       <h1 className="text-2xl font-semibold text-black">Refer Your Friends</h1>
+
+      {/* Sub Title */}
       <p className="text-sm text-black">
         Help your friends check their credit score for free! Share your referral
         link and spread financial awareness.
@@ -29,11 +32,11 @@ const ReferBanner = () => {
           />
         </svg>
       </button>
-      {/* <div className="relative"> */}
+
+      {/* Bottom Image */}
       <div className="">
         <img src="/credit-score/refer.svg" alt="refer-img" />
       </div>
-      {/* </div> */}
     </div>
   );
 };

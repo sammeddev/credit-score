@@ -17,6 +17,14 @@ const OfferCard = ({ data }) => {
       });
     }
   };
+
+  const benefits = [
+    "Quick Approval",
+    "Minimal Documentation",
+    "Low-Interest Rates",
+    "Flexible Repayment Tenure",
+  ];
+
   return (
     <>
       <div className="w-full rounded-r-lg border shadow">
@@ -90,12 +98,23 @@ const OfferCard = ({ data }) => {
                       </div>
                     </div>
 
+                    {/* Benifits */}
                     <ul className="mt-6 space-y-2 text-start text-sm text-gray-700">
-                      <li>+ Quick Approval</li>
-                      <li>+ Minimal Documentation</li>
-                      <li>+ Low-Interest Rates</li>
-                      <li>+ Flexible Repayment Tenure</li>
+                      {benefits.map((benefit, index) => (
+                        <li
+                          key={index}
+                          className="flex items-center justify-start gap-2"
+                        >
+                          <img
+                            src="/credit-score/star1.png"
+                            alt="benefit indicator"
+                            className="h-2.5 w-2.5"
+                          />
+                          {benefit}
+                        </li>
+                      ))}
                     </ul>
+
                     <button
                       className="mx-auto mt-6 flex items-center justify-center gap-1 rounded-[8px] border px-4 py-1 text-sm text-white transition hover:border-gray-500"
                       style={{
