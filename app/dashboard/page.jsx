@@ -11,8 +11,12 @@ const Page = () => {
         <CreditScoreHeader />
 
         <div className="flex w-full items-start justify-start md:space-x-6">
-          <CreditSidebar />
-          <CreditRightSection />
+          <div className="w-[350px]">
+            <CreditSidebar />
+          </div>
+          <div className="w-full">
+            <CreditRightSection />
+          </div>
         </div>
       </div>
     </div>

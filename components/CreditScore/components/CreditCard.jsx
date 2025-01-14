@@ -28,7 +28,7 @@ const CreditCard = ({ data }) => {
           return (
             <div
               key={index}
-              className="card font-poppins hover:scale-103 w-full max-w-full flex-shrink-0 cursor-pointer rounded-[20px]  transition-transform  duration-300 lg:max-w-[302px]"
+              className="card font-poppins hover:scale-103 w-full max-w-[320px] flex-shrink-0 cursor-pointer rounded-[20px] transition-all duration-300 lg:max-w-[293px]"
             >
               <img src={img} className="h-full w-[360px]" />
             </div>

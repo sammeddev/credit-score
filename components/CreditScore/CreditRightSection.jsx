@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import CreditScoreBanner from "./components/CreditScoreBanner";
+import WrapperWithHeader from "./components/CardWrapperWithHeader";
 import OfferCard from "./components/OfferCard";
 import CreditCard from "./components/CreditCard";
-import WrapperWithHeader from "./components/CardWrapperWithHeader";
+import ReportInsights from "./components/ReportInsights";
 import FaqSection from "../Common/FaqSection";
 import CreditScoreFAQ from "@/mock/CreditScoreFAQ";
 
@@ -52,6 +53,48 @@ const CreditRightSection = () => {
       img: "/credit-score/credit-card2.png",
     },
   ];
+  const insightsData = [
+    {
+      imageSrc: "/credit-score/insights1.png",
+      imageAlt: "insights-img",
+      title: "Credit Utilisation",
+      impact: "High Impact",
+      value: "15%",
+      subtitle: "Utilised",
+      status: "Excellent",
+      color: "#217A00",
+    },
+    {
+      imageSrc: "/credit-score/insights1.png",
+      imageAlt: "insights-img",
+      title: "Credit Utilisation",
+      impact: "High Impact",
+      value: "100%",
+      subtitle: "One Time Payment",
+      status: "Excellent",
+      color: "#217A00",
+    },
+    {
+      imageSrc: "/credit-score/insights1.png",
+      imageAlt: "insights-img-2",
+      title: "Payment History",
+      impact: "Very High Impact",
+      value: "100%",
+      subtitle: "On Time",
+      status: "Average",
+      color: "#FF8800",
+    },
+    {
+      imageSrc: "/credit-score/insights1.png",
+      imageAlt: "insights-img-2",
+      title: "Payment History",
+      impact: "Very High Impact",
+      value: "10%",
+      subtitle: "Due",
+      status: "Poor",
+      color: "#E70003",
+    },
+  ];
   return (
     <div className="w-full">
       {/* Credit Score Banner */}
@@ -67,6 +110,10 @@ const CreditRightSection = () => {
       {/* Credit Card Offers Cards */}
       <WrapperWithHeader headerText={"Pre Approved Offers"}>
         <CreditCard data={ccOffers} />
+      </WrapperWithHeader>
+
+      <WrapperWithHeader headerText={"Credit Score FAQ"}>
+        <ReportInsights insightsData={insightsData} />
       </WrapperWithHeader>
 
       {/* FAQ section */}

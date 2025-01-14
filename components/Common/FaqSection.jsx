@@ -58,7 +58,7 @@ const FaqSection = ({ faqData, heading }) => {
   }
 
   return (
-    <div className="mx-auto w-full">
+    <div className="mx-auto w-full rounded-r-lg border p-4">
       {/* Faq */}
       {faqData.map((item, index) => (
         <div key={index} className="bg-white py-2">

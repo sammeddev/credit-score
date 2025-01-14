@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import ReferBanner from "./ReferBanner";
 
 // Sidebar component
 const CreditSidebar = () => {
@@ -61,59 +62,65 @@ const CreditSidebar = () => {
   ];
 
   return (
-    <div className="hidden w-[300px]  rounded-xl bg-white p-4 shadow-shadowCommon md:block">
-      <ul>
-        {items.map((item, index) => (
-          <li key={index} className="mb-4">
-            {/* Main item with optional collapsibility */}
-            <div
-              className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-100"
-              onClick={() => item.children && toggleSection(index)}
-            >
-              <div className="flex items-center">
-                <span className="mr-3">
-                  <img
-                    src={item.icon}
-                    alt={item.alt}
-                    className="h-[20px] w-[20px]"
-                  />
-                </span>
-                <span>{item.label}</span>
+    <div className="w-full space-y-4">
+      <div className="hidden rounded-xl bg-white p-4 shadow-shadowCommon md:block">
+        <ul>
+          {items.map((item, index) => (
+            <li key={index} className="mb-4">
+              {/* Main item with optional collapsibility */}
+              <div
+                className="flex cursor-pointer items-center justify-between rounded-lg p-2 hover:bg-gray-100"
+                onClick={() => item.children && toggleSection(index)}
+              >
+                <div className="flex items-center">
+                  <span className="mr-3">
+                    <img
+                      src={item.icon}
+                      alt={item.alt}
+                      className="h-[20px] w-[20px]"
+                    />
+                  </span>
+                  <span>{item.label}</span>
+                </div>
+                {item.children && (
+                  <span>
+                    <img
+                      src="/credit-score/down-arrow.png"
+                      className={`h-[20px] w-[20px] transition-transform duration-300 ${
+                        collapsedSections[index] ? "rotate-180" : "rotate-0"
+                      }`}
+                      alt="arrow"
+                    />
+                  </span>
+                )}
               </div>
-              {item.children && (
-                <span>
-                  <img
-                    src="/credit-score/down-arrow.png"
-                    className={`h-[20px] w-[20px] transition-transform duration-300 ${
-                      collapsedSections[index] ? "rotate-180" : "rotate-0"
-                    }`}
-                    alt="arrow"
-                  />
-                </span>
+
+              {/* Collapsible content */}
+              {item.children && collapsedSections[index] && (
+                <ul className="ml-6 mt-2 space-y-2">
+                  {item.children.map((child, childIndex) => (
+                    <li
+                      key={childIndex}
+                      className="flex cursor-pointer items-center rounded-lg p-2 hover:bg-gray-100"
+                    >
+                      <span className="mr-3">{child.icon}</span>
+                      <span>{child.label}</span>
+                    </li>
+                  ))}
+                </ul>
               )}
-            </div>
+            </li>
+          ))}
+        </ul>
 
-            {/* Collapsible content */}
-            {item.children && collapsedSections[index] && (
-              <ul className="ml-6 mt-2 space-y-2">
-                {item.children.map((child, childIndex) => (
-                  <li
-                    key={childIndex}
-                    className="flex cursor-pointer items-center rounded-lg p-2 hover:bg-gray-100"
-                  >
-                    <span className="mr-3">{child.icon}</span>
-                    <span>{child.label}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+        {/* Experien Logo */}
+        <div className="flex items-center justify-center text-center">
+          <img src="/credit-score/pwd-icon.png" alt="experian-logo" />
+        </div>
+      </div>
 
-      {/* Experien Logo */}
-      <div className="flex items-center justify-center text-center">
-        <img src="/credit-score/pwd-icon.png" alt="experian-logo" />
+      <div className="hidden max-w-[300px]  lg:block">
+        <ReferBanner />
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ const OfferCard = ({ data }) => {
             return (
               <>
                 <div
-                  className="card font-poppins hover:scale-103 w-full max-w-full flex-shrink-0 cursor-pointer overflow-hidden rounded-[20px] border transition-all duration-300 lg:max-w-[302px]"
+                  className="card font-poppins hover:scale-103 w-full max-w-[320px] flex-shrink-0 cursor-pointer overflow-hidden rounded-[20px] border transition-all duration-300 lg:max-w-[293px]"
                   style={{
                     borderColor: color,
                     boxShadow: "10px 10px 30px rgba(0, 0, 0, 0.3)",

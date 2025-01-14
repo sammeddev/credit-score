@@ -3,7 +3,7 @@ import React from "react";
 const CreditScoreBanner = () => {
   return (
     <div>
-      <div className="flex w-full flex-col items-start justify-between space-y-6 lg:flex-row lg:space-y-0">
+      <div className="flex w-full flex-col items-start justify-between space-y-6 md:items-center lg:flex-row lg:space-y-0">
         {/* Left */}
         <div className="flex-1 text-center lg:text-left">
           <img

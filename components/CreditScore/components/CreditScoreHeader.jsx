@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const CreditScoreHeader = () => {
@@ -19,9 +19,17 @@ const CreditScoreHeader = () => {
 
   // LogoutModal component
   const LogoutModal = () => {
+    const [animate, setAnimate] = useState(false);
+
+    useEffect(() => {
+      setAnimate(true);
+    }, []);
+
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="relative m-2 w-full max-w-md rounded-3xl bg-white p-8">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-all duration-300">
+        <div
+          className={`relative m-2 w-full max-w-md rounded-3xl bg-white p-8 transition-all duration-300 ${animate ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+        >
           <div className="text-center">
             <h2 className="mb-4 text-lg font-semibold text-black">
               Are you sure you want to logout?
