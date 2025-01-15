@@ -80,7 +80,6 @@ const CreditOtpValidation = ({
       sessionStorage.setItem("_token", response?.user_token);
       updateMessage(response?.message, true);
       toast.success(response?.message); // sucess toast
-      verifyUsers(response?.user_token);
 
       // Update the form state to reflect that the modal is open
       setTimeout(() => {
@@ -191,81 +190,6 @@ const CreditOtpValidation = ({
       setState((prev) => ({ ...prev, loading: false }));
     }
   };
-
-  // Verify Users function
-  const verifyUsers = async (userToken) => {
-    if (!userToken) {
-      updateMessage("User token is not available.", false);
-      return;
-    }
-
-    try {
-      // Construct the payload
-      const payload = new URLSearchParams({
-        platform: platform,
-        utm: utmMedium,
-        utm_source: utmSource,
-        user_token: userToken,
-      });
-
-      // Make OTP verification API call
-      const response = await userSearch(payload);
-      // Set user data in userData context
-      setUserSearchData(response);
-
-      if (response.status === "failure") {
-        updateMessage(
-          response.message ?? "In user search an unexpected error occurred.",
-          false,
-        );
-      }
-      sessionStorage.setItem("journey", 1);
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        "In user search an unexpected error occurred.";
-      updateMessage(errorMessage);
-    } finally {
-      setState((prev) => ({ ...prev, loading: false }));
-    }
-  };
-
-  // useEffect(() => {
-  //   // Exit early if userData is empty or undefined
-  //   if (!userData || userData === "") return;
-
-  //   if (userData && userData.loan_status_30 === 0) {
-  //     // here user can take new journey
-  //     setUserId(userData.id);
-  //     setStartUserNewJourney(true);
-  //     setShowOfferPage(false);
-  //     const data = {
-  //       userId: userData.id,
-  //       StartUserNewJourney: startUserNewJourney,
-  //       ShowOfferPage: showOfferPage,
-  //     };
-  //     // Store the JSON data in sessionStorage
-  //     sessionStorage.setItem("u_stat_bdl", JSON.stringify(data));
-
-  //     router.push("/apply-loan-online/user-journey");
-  //   } else {
-  //     setUserId(userData.id);
-  //     setStartUserNewJourney(false);
-  //     setShowOfferPage(true);
-  //     const data = {
-  //       userId: userData.id,
-  //       StartUserNewJourney: startUserNewJourney,
-  //       ShowOfferPage: showOfferPage,
-  //     };
-
-  //     // Store the JSON data in sessionStorage
-  //     const userStat = encryptData(data);
-  //     sessionStorage.setItem("u_stat_bdl", userStat);
-
-  //     // loan_status_30 = 1 redirect to offer page
-  //     router.push("/apply-loan-online/user-status");
-  //   }
-  // }, [userData]);
 
   const handleEditClick = () => {
     // Update the form state to reflect that the modal is open

@@ -92,7 +92,7 @@ const OtpValidation = ({
       sessionStorage.setItem("_token", response.user_token);
       updateMessage(response.message, true);
       toast.success(response?.message); // sucess toast
-      verifyUsers(response?.user_token);
+      // verifyUsers(response?.user_token);
       setUserData(response);
       return;
     }
