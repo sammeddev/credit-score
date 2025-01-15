@@ -50,14 +50,15 @@ const OtpTimerTwo = ({ reSendOtp, verifyOtp }) => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  // useEffect(() => {
-  //   if (verifyOtp === true) {
-  //     // start the timer
-  //     const now = Date.now();
-  //     sessionStorage.setItem("otpTimerStart", now.toString());
-  //     startTimer(initialTimerDuration); // Start a fresh timer
-  //   }
-  // }, [verifyOtp]);
+  useEffect(() => {
+    const otpTimerStart = sessionStorage.getItem("otpTimerStart");
+    if (!otpTimerStart || otpTimerStart === "") {
+      // start the timer
+      const now = Date.now();
+      sessionStorage.setItem("otpTimerStart", now.toString());
+      startTimer(initialTimerDuration); // Start a fresh timer
+    }
+  }, []);
 
   const handleResendOtp = () => {
     // Reset the timer
@@ -66,7 +67,7 @@ const OtpTimerTwo = ({ reSendOtp, verifyOtp }) => {
     startTimer(initialTimerDuration); // Start a fresh timer
 
     // Call resend otp api function
-    // reSendOtp();
+    reSendOtp();
   };
 
   return (

@@ -8,7 +8,7 @@ import CreditOtpValidation from "./CreditOtpValidation";
 import CreditScroreInfo from "../CreditScroreInfo";
 import CONSTANTS from "@/utils/constants";
 import toast from "react-hot-toast";
-import { encryptData64, decryptData64 } from "@/utils/cryptoUtils64";
+import { encryptData64 } from "@/utils/cryptoUtils64";
 import { sendSMS } from "@/api/user";
 
 const CreditAuth = ({ formState, setFormState, setLoading }) => {
@@ -124,6 +124,9 @@ const CreditAuth = ({ formState, setFormState, setLoading }) => {
       mobileNumber: mobile,
     }));
 
+    // set otp timer start from begining
+    sessionStorage.setItem("otpTimerStart", "");
+
     // Store the updated state in sessionStorage
     sessionStorage.setItem(
       CONSTANTS.STORAGE_KEYS.USER_AUTH,
@@ -159,8 +162,6 @@ const CreditAuth = ({ formState, setFormState, setLoading }) => {
 
   // OTP Modal
   const OTPModal = ({ isOpen }) => {
-    console.log("data", formState);
-
     useEffect(() => {
       if (isOpen) {
         setAnimate(true);
