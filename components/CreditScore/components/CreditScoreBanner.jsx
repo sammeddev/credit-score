@@ -13,13 +13,13 @@ const CreditScoreBanner = () => {
           />
 
           {/* Refresh Button */}
-          <button className="bottom-0 right-0 mx-auto mb-4 flex items-center gap-2 rounded-md bg-[#F3F3F3] px-4 py-1 text-sm text-black hover:bg-[#e3e3e1]">
+          {/* <button className="bottom-0 right-0 mx-auto mb-4 flex items-center gap-2 rounded-md bg-[#F3F3F3] px-4 py-1 text-sm text-black hover:bg-[#e3e3e1]">
             <img
               src="/credit-score/refresh.png"
               className="h-[18px] w-[18px]"
             />
             Refresh Now
-          </button>
+          </button> */}
         </div>
 
         {/* Right */}
@@ -43,7 +43,7 @@ const CreditScoreBanner = () => {
       </div>
 
       {/* Buttons Div */}
-      <div className="flex flex-col items-center justify-center gap-4 lg:flex-row">
+      <div className="flex flex-col items-center justify-center gap-4 pb-2 pt-6 lg:flex-row">
         {/* Download Report Button */}
         <button
           style={{
@@ -59,7 +59,7 @@ const CreditScoreBanner = () => {
         {/* Credit History Button */}
         <button className="mx-auto flex items-center gap-2 rounded-lg bg-[#EAF7FF] px-4 py-2 text-xl font-semibold text-[#000ADD] hover:bg-[#CCEFFF]">
           <img src="/credit-score/arrow.png" className="h-[25px] w-[25px]" />{" "}
-          Credit History
+          Score Trend
         </button>
       </div>
     </div>

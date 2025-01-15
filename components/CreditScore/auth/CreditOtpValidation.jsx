@@ -1,9 +1,9 @@
 "use client";
-import React, { useState, useRef, useEffect, memo } from "react";
+import React, { useState, useRef, useEffect, memo, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { resendOTP, userSearch, verifyOTP } from "../../../api/user";
-import { encryptData, decryptData } from "../../../utils/cryptoUtils"; // Import the functions
+import { decryptData64 } from "@/utils/cryptoUtils64";
 import { useUserContext } from "../../../utils/UserContext";
 import OtpTimerTwo from "./OtpTimerTwo";
 
@@ -35,13 +35,6 @@ const CreditOtpValidation = ({
     setUserSearchData,
   } = useUserContext();
 
-  // console.log("userSearchData++++++", userSearchData);
-
-  useEffect(() => {
-    // setUserId("Okkkkkkkk");
-    // setUserSearchData([{ data: "setting" }]);
-  }, []);
-
   const router = useRouter();
   // Local states
   const [state, setState] = useState({
@@ -49,11 +42,39 @@ const CreditOtpValidation = ({
     message: "",
     canVerifyOtp: false,
     enteredOtp: "",
+    mobileNumber: "",
   });
   const [userData, setUserData] = useState("");
   // console.log("userData", userData);
-  // Get mobile number from session storage
-  const mobileNumber = sessionStorage.getItem("mobileNumber");
+
+  // Memoize decryptData64 function if it's defined in the component
+  const decryptMobile = useCallback(async (savedMobile) => {
+    try {
+      return await decryptData64(savedMobile);
+    } catch (error) {
+      console.error("Error decrypting mobile:", error);
+      return null;
+    }
+  }, []);
+
+  // Use useCallback for the main fetch function
+  const fetchAndDecryptMobile = useCallback(async () => {
+    // Get mobile number from session storage
+    const savedMobile = sessionStorage.getItem("mobileNumber");
+    if (!savedMobile) return;
+
+    const decryptedMobile = await decryptMobile(savedMobile);
+    console.log("decryptedMobile", decryptedMobile);
+
+    if (decryptedMobile) {
+      setState((prev) => ({ ...prev, mobileNumber: decryptedMobile }));
+    }
+  }, [decryptMobile]);
+
+  // Optimize useEffect
+  useEffect(() => {
+    fetchAndDecryptMobile();
+  }, []);
 
   // Update message state with an icon based on success or failure
   const updateMessage = (text, isSuccess = false) => {
@@ -64,11 +85,12 @@ const CreditOtpValidation = ({
   // Handle OTP verification logic
   const handleOtpVerification = async (enteredOtp) => {
     setState((prev) => ({ ...prev, loading: true }));
+    console.log("called");
 
     try {
       // Prepare payload for OTP verification request
       const payload = new URLSearchParams({
-        mobile_no: mobileNumber,
+        mobile_no: state?.mobileNumber,
         mobile_otp: enteredOtp,
         platform,
         utm: utmMedium,
@@ -77,14 +99,7 @@ const CreditOtpValidation = ({
       });
 
       // Make OTP verification API call
-      // const response = await verifyOTP(payload);
-      const response = {
-        data: {
-          status: "success",
-          message: "OTP Match",
-          user_token: "1234567zxcvb",
-        },
-      };
+      const response = await verifyOTP(payload);
       handleVerificationResponse(response?.data); // Handle response from API
     } catch (error) {
       const errorMessage =
@@ -110,6 +125,7 @@ const CreditOtpValidation = ({
         setFormState((prev) => {
           const updatedState = {
             ...prev,
+            isModalOpen: false,
             isUserAuthSuccess: true,
           };
 
@@ -119,6 +135,7 @@ const CreditOtpValidation = ({
           return updatedState;
         });
       }, 1000);
+
       return;
     }
 
@@ -153,7 +170,6 @@ const CreditOtpValidation = ({
     // Check if OTP is complete
     if (newOtpValues.every((digit) => digit !== "")) {
       const enteredOtp = newOtpValues.join("");
-      console.log("enteredOtp", enteredOtp);
       setState((prev) => ({
         ...prev,
         canVerifyOtp: true,
@@ -177,19 +193,6 @@ const CreditOtpValidation = ({
   // Handle Verify OTP
   const handleVerifyOTP = (e) => {
     e.preventDefault();
-    // Update the form state to reflect that the modal is open
-    setFormState((prev) => {
-      const updatedState = {
-        ...prev,
-        isModalOpen: false,
-      };
-
-      // Store the updated state in sessionStorage
-      sessionStorage.setItem("u_data", JSON.stringify(updatedState));
-
-      return updatedState;
-    });
-
     handleOtpVerification(state?.enteredOtp);
   };
 
@@ -203,7 +206,7 @@ const CreditOtpValidation = ({
     try {
       // Prepare payload for OTP verification request
       const payload = new URLSearchParams({
-        mobile: mobileNumber,
+        mobile: state?.mobileNumber,
         utm: "homepgbanappnowbtn",
         platform: "Nweb",
       });
@@ -238,7 +241,7 @@ const CreditOtpValidation = ({
     try {
       // Construct the payload
       const payload = new URLSearchParams({
-        mobile_no: mobileNumber,
+        mobile_no: state?.mobileNumber,
         platform: platform,
         utm: utmMedium,
         utm_source: utmSource,
@@ -246,9 +249,7 @@ const CreditOtpValidation = ({
       });
 
       // Make OTP verification API call
-      const res = await userSearch(payload);
-      // decrypting the res here
-      const response = decryptData(res?.data?.encryptData);
+      const response = await userSearch(payload);
       // Set user data in userData context
       setUserSearchData(response);
 

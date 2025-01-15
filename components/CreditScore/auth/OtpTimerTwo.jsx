@@ -50,14 +50,14 @@ const OtpTimerTwo = ({ reSendOtp, verifyOtp }) => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  useEffect(() => {
-    if (verifyOtp === true) {
-      // start the timer
-      const now = Date.now();
-      sessionStorage.setItem("otpTimerStart", now.toString());
-      startTimer(initialTimerDuration); // Start a fresh timer
-    }
-  }, [verifyOtp]);
+  // useEffect(() => {
+  //   if (verifyOtp === true) {
+  //     // start the timer
+  //     const now = Date.now();
+  //     sessionStorage.setItem("otpTimerStart", now.toString());
+  //     startTimer(initialTimerDuration); // Start a fresh timer
+  //   }
+  // }, [verifyOtp]);
 
   const handleResendOtp = () => {
     // Reset the timer

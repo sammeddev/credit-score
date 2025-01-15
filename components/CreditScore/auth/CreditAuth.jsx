@@ -6,11 +6,16 @@ import FaqSection from "@/components/Common/FaqSection";
 import CreditScoreFAQ from "@/mock/CreditScoreFAQ";
 import CreditOtpValidation from "./CreditOtpValidation";
 import CreditScroreInfo from "../CreditScroreInfo";
+import CONSTANTS from "@/utils/constants";
+import toast from "react-hot-toast";
+import { encryptData64, decryptData64 } from "@/utils/cryptoUtils64";
+import { sendSMS } from "@/api/user";
 
 const CreditAuth = ({ formState, setFormState, setLoading }) => {
   // Form fields and state
   const fields = ["fullName", "email", "mobileNumber"];
   const [errorMsg, setErrorMsg] = useState("");
+  const [animate, setAnimate] = useState(false);
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -22,7 +27,7 @@ const CreditAuth = ({ formState, setFormState, setLoading }) => {
   useEffect(() => {
     setLoading(true);
     // Retrieve data from sessionStorage on component mount
-    const storedData = sessionStorage.getItem("u_data");
+    const storedData = sessionStorage.getItem(CONSTANTS.STORAGE_KEYS.USER_AUTH);
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       Object.keys(parsedData).forEach((field) => {
@@ -33,6 +38,18 @@ const CreditAuth = ({ formState, setFormState, setLoading }) => {
       setLoading(false);
     }
   }, []);
+
+  const showToast = (message, type = "error") => {
+    toast[type](message);
+  };
+
+  // Mobile Number Validation
+  const validateMobile = (number) => {
+    return (
+      CONSTANTS.MOBILE_REGEX.test(number) &&
+      !CONSTANTS.INVALID_NUMBERS.includes(number)
+    );
+  };
 
   // Function to update a specific field in the form state
   const updateFormField = (field, value) => {
@@ -70,32 +87,97 @@ const CreditAuth = ({ formState, setFormState, setLoading }) => {
     );
   }, [formState.userConsent]);
 
-  const onSubmit = (data) => {
-    console.log("Submitted data:", data);
+  // Session Storage Operations
+  const saveToSession = async (mobile) => {
+    const encrypted = await encryptData64(mobile);
+    sessionStorage.setItem(CONSTANTS.STORAGE_KEYS.MOBILE, encrypted);
+    return encrypted;
+  };
 
+  // Response Handlers
+  const handleSendSmsResponse = (response, mobile) => {
+    if (response?.status === "success" && response?.HTTPStatus === 200) {
+      showToast("OTP sent successfully", "success");
+      handleSuccessfulOtpSend(mobile);
+      return;
+    }
+
+    const isFailure = response?.status === "failure";
+    if (isFailure) {
+      showToast(response.msg);
+      sessionStorage.setItem(CONSTANTS.STORAGE_KEYS.HASERROR, true);
+    }
+  };
+
+  const handleSuccessfulOtpSend = (mobile) => {
     const updatedState = {
       ...formState,
       isModalOpen: true,
+      mobileNumber: mobile,
     };
-
-    // Store the updated state in sessionStorage
-    sessionStorage.setItem("u_data", JSON.stringify(updatedState));
 
     // Update the formState
     setFormState((prev) => ({
       ...prev,
       isModalOpen: true,
       verifyOtp: true,
+      mobileNumber: mobile,
     }));
+
+    // Store the updated state in sessionStorage
+    sessionStorage.setItem(
+      CONSTANTS.STORAGE_KEYS.USER_AUTH,
+      JSON.stringify(updatedState),
+    );
+    sessionStorage.setItem(CONSTANTS.STORAGE_KEYS.HASERROR, false);
   };
 
-  // OTP Modal component
+  // API Integration
+  const sendOtp = async (mobile) => {
+    try {
+      const encryptedMobile = await saveToSession(mobile);
+      const payload = new URLSearchParams({
+        mobile: encryptedMobile,
+        utm: "homepgbanappnowbtn",
+        platform: "Nweb",
+      });
+
+      const response = await sendSMS(payload);
+      handleSendSmsResponse(response?.data, mobile);
+    } catch (error) {
+      showToast("Error sending OTP");
+    }
+  };
+
+  const onSubmit = async (data) => {
+    if (validateMobile(data?.mobileNumber)) {
+      await sendOtp(data.mobileNumber);
+    } else {
+      showToast("Invalid mobile number.");
+    }
+  };
+
+  // OTP Modal
   const OTPModal = ({ isOpen }) => {
+    console.log("data", formState);
+
+    useEffect(() => {
+      if (isOpen) {
+        setAnimate(true);
+      } else {
+        setAnimate(false);
+      }
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="relative m-2 w-full max-w-md rounded-3xl bg-white p-8">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-all duration-300">
+        <div
+          className={`relative m-2 w-full max-w-md rounded-3xl bg-white p-8 transition-all duration-300 ${
+            animate ? "scale-100 opacity-100" : "scale-95 opacity-0"
+          }`}
+        >
           <CreditOtpValidation
             utmSource=""
             utmMedium=""
@@ -206,7 +288,7 @@ const CreditAuth = ({ formState, setFormState, setLoading }) => {
                 </div>
               </form>
 
-              <OTPModal isOpen={formState?.isModalOpen} />
+              <OTPModal isOpen={formState?.isModalOpen} data={formState} />
             </div>
 
             {/* Right Section */}
