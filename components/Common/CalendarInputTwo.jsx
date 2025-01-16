@@ -43,12 +43,12 @@ const CalendarInputTwo = ({
 
   // Set initial date if selectedDates is passed as a prop
   useEffect(() => {
-    if (selectedDates) {
-      setSelectedDate(new Date(selectedDates));
-      setCurrentMonth(selectedDates.getMonth());
-      setCurrentYear(selectedDates.getFullYear());
+    if (value) {
+      setSelectedDate(new Date(value));
+      setCurrentMonth(value.getMonth());
+      setCurrentYear(value.getFullYear());
     }
-  }, [selectedDates]);
+  }, [value]);
 
   const handleClickOutside = (event) => {
     if (calendarRef.current && !calendarRef.current.contains(event.target)) {
@@ -111,7 +111,7 @@ const CalendarInputTwo = ({
         } bg-white focus:outline-none focus:ring-2 focus:ring-[#47B6F2]`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className="text-gray-700">
+        <span className="text-black">
           {selectedDate ? (
             formatDate(selectedDate)
           ) : (

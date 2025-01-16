@@ -208,6 +208,11 @@ const fieldSchemas = {
   years: z.string().min(1, "Year is required"),
   designation: z.string().min(1, "Designation is required"),
   qualification: z.string().min(1, "Qualification is required"),
+  emplyoment_type: z.string().min(1, "Please select your company type"),
+  pan: z
+    .string()
+    .min(1, "PAN card is required")
+    .regex(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN card format"),
   panCard: z
     .string()
     .min(1, "PAN card is required")

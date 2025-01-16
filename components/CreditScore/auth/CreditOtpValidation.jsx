@@ -1,9 +1,8 @@
 "use client";
-import React, { useState, useRef, useEffect, memo } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { resendOTP, userSearch, verifyOTP } from "../../../api/user";
-import { encryptData, decryptData } from "../../../utils/cryptoUtils"; // Import the functions
+import { decryptData64, encryptData64 } from "@/utils/cryptoUtils64";
 import { useUserContext } from "../../../utils/UserContext";
 import OtpTimerTwo from "./OtpTimerTwo";
 
@@ -16,44 +15,30 @@ const CreditOtpValidation = ({
   verifyOtp,
   setFormState,
 }) => {
-  const [otpValues, setOtpValues] = useState(Array(totalDigits).fill(""));
-  const inputRefs = useRef([]);
-
-  // Focus the first input on component mount
-  useEffect(() => {
-    if (inputRefs.current[0]) inputRefs.current[0].focus();
-  }, []);
-
-  const {
-    userId,
-    setUserId,
-    startUserNewJourney,
-    setStartUserNewJourney,
-    showOfferPage,
-    setShowOfferPage,
-    userSearchData,
-    setUserSearchData,
-  } = useUserContext();
-
-  // console.log("userSearchData++++++", userSearchData);
-
-  useEffect(() => {
-    // setUserId("Okkkkkkkk");
-    // setUserSearchData([{ data: "setting" }]);
-  }, []);
-
-  const router = useRouter();
   // Local states
   const [state, setState] = useState({
     loading: false,
     message: "",
     canVerifyOtp: false,
     enteredOtp: "",
+    encryptedMobile: "",
   });
-  const [userData, setUserData] = useState("");
-  // console.log("userData", userData);
-  // Get mobile number from session storage
-  const mobileNumber = sessionStorage.getItem("mobileNumber");
+  const [otpValues, setOtpValues] = useState(Array(totalDigits).fill(""));
+  const inputRefs = useRef([]);
+  const { setUserSearchData } = useUserContext();
+
+  useEffect(() => {
+    const getEncryptedMobile = async (mobile) => {
+      const encryptedMobile = await encryptData64(mobile);
+      setState((prev) => ({ ...prev, encryptedMobile: encryptedMobile }));
+    };
+    getEncryptedMobile(mobile);
+  }, []);
+
+  // Focus the first input on component mount
+  useEffect(() => {
+    if (inputRefs.current[0]) inputRefs.current[0].focus();
+  }, []);
 
   // Update message state with an icon based on success or failure
   const updateMessage = (text, isSuccess = false) => {
@@ -68,7 +53,7 @@ const CreditOtpValidation = ({
     try {
       // Prepare payload for OTP verification request
       const payload = new URLSearchParams({
-        mobile_no: mobileNumber,
+        mobile_no: mobile,
         mobile_otp: enteredOtp,
         platform,
         utm: utmMedium,
@@ -77,14 +62,7 @@ const CreditOtpValidation = ({
       });
 
       // Make OTP verification API call
-      // const response = await verifyOTP(payload);
-      const response = {
-        data: {
-          status: "success",
-          message: "OTP Match",
-          user_token: "1234567zxcvb",
-        },
-      };
+      const response = await verifyOTP(payload);
       handleVerificationResponse(response?.data); // Handle response from API
     } catch (error) {
       const errorMessage =
@@ -99,17 +77,16 @@ const CreditOtpValidation = ({
   // Handle OTP verification response
   const handleVerificationResponse = (response) => {
     if (response?.status === "success" && response?.message === "OTP Match") {
-      sessionStorage.setItem("_token", response.user_token);
-      updateMessage(response.message, true);
+      sessionStorage.setItem("_token", response?.user_token);
+      updateMessage(response?.message, true);
       toast.success(response?.message); // sucess toast
-      verifyUsers(response?.user_token);
-      setUserData(response);
 
       // Update the form state to reflect that the modal is open
       setTimeout(() => {
         setFormState((prev) => {
           const updatedState = {
             ...prev,
+            isModalOpen: false,
             isUserAuthSuccess: true,
           };
 
@@ -153,7 +130,6 @@ const CreditOtpValidation = ({
     // Check if OTP is complete
     if (newOtpValues.every((digit) => digit !== "")) {
       const enteredOtp = newOtpValues.join("");
-      console.log("enteredOtp", enteredOtp);
       setState((prev) => ({
         ...prev,
         canVerifyOtp: true,
@@ -177,19 +153,6 @@ const CreditOtpValidation = ({
   // Handle Verify OTP
   const handleVerifyOTP = (e) => {
     e.preventDefault();
-    // Update the form state to reflect that the modal is open
-    setFormState((prev) => {
-      const updatedState = {
-        ...prev,
-        isModalOpen: false,
-      };
-
-      // Store the updated state in sessionStorage
-      sessionStorage.setItem("u_data", JSON.stringify(updatedState));
-
-      return updatedState;
-    });
-
     handleOtpVerification(state?.enteredOtp);
   };
 
@@ -203,7 +166,7 @@ const CreditOtpValidation = ({
     try {
       // Prepare payload for OTP verification request
       const payload = new URLSearchParams({
-        mobile: mobileNumber,
+        mobile: state?.encryptedMobile,
         utm: "homepgbanappnowbtn",
         platform: "Nweb",
       });
@@ -211,11 +174,11 @@ const CreditOtpValidation = ({
       // Make OTP verification API call
       const response = await resendOTP(payload);
 
-      if (response.data === "success") {
+      if (response.data.status === "success") {
         toast.success("OTP sent successfully.");
       }
 
-      if (response.data === "failure") {
+      if (response.data.status === "failure") {
         updateMessage(response.data.message, false);
         toast.error(response.data.message);
       }
@@ -227,84 +190,6 @@ const CreditOtpValidation = ({
       setState((prev) => ({ ...prev, loading: false }));
     }
   };
-
-  // Verify Users function
-  const verifyUsers = async (userToken) => {
-    if (!userToken) {
-      updateMessage("User token is not available.", false);
-      return;
-    }
-
-    try {
-      // Construct the payload
-      const payload = new URLSearchParams({
-        mobile_no: mobileNumber,
-        platform: platform,
-        utm: utmMedium,
-        utm_source: utmSource,
-        user_token: userToken,
-      });
-
-      // Make OTP verification API call
-      const res = await userSearch(payload);
-      // decrypting the res here
-      const response = decryptData(res?.data?.encryptData);
-      // Set user data in userData context
-      setUserSearchData(response);
-
-      if (response.status === "failure") {
-        updateMessage(
-          response.message ?? "In user search an unexpected error occurred.",
-          false,
-        );
-      }
-      sessionStorage.setItem("journey", 1);
-    } catch (error) {
-      const errorMessage =
-        error?.response?.data?.message ||
-        "In user search an unexpected error occurred.";
-      updateMessage(errorMessage);
-    } finally {
-      setState((prev) => ({ ...prev, loading: false }));
-    }
-  };
-
-  // useEffect(() => {
-  //   // Exit early if userData is empty or undefined
-  //   if (!userData || userData === "") return;
-
-  //   if (userData && userData.loan_status_30 === 0) {
-  //     // here user can take new journey
-  //     setUserId(userData.id);
-  //     setStartUserNewJourney(true);
-  //     setShowOfferPage(false);
-  //     const data = {
-  //       userId: userData.id,
-  //       StartUserNewJourney: startUserNewJourney,
-  //       ShowOfferPage: showOfferPage,
-  //     };
-  //     // Store the JSON data in sessionStorage
-  //     sessionStorage.setItem("u_stat_bdl", JSON.stringify(data));
-
-  //     router.push("/apply-loan-online/user-journey");
-  //   } else {
-  //     setUserId(userData.id);
-  //     setStartUserNewJourney(false);
-  //     setShowOfferPage(true);
-  //     const data = {
-  //       userId: userData.id,
-  //       StartUserNewJourney: startUserNewJourney,
-  //       ShowOfferPage: showOfferPage,
-  //     };
-
-  //     // Store the JSON data in sessionStorage
-  //     const userStat = encryptData(data);
-  //     sessionStorage.setItem("u_stat_bdl", userStat);
-
-  //     // loan_status_30 = 1 redirect to offer page
-  //     router.push("/apply-loan-online/user-status");
-  //   }
-  // }, [userData]);
 
   const handleEditClick = () => {
     // Update the form state to reflect that the modal is open

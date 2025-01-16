@@ -1,5 +1,5 @@
 import { useFormValidation } from "@/hooks/useValidation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputTwo from "../Common/InputTwo";
 import CalendarInputTwo from "../Common/CalendarInputTwo";
 import Dropdown from "../Common/Dropdown";
@@ -7,9 +7,14 @@ import CreditScroreInfo from "./CreditScroreInfo";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
+const CheckCreditScroreForm = ({
+  formState,
+  setFormState,
+  setLoading,
+  userSearchData,
+}) => {
   // Form fields and state
-  const fields = ["dob", "panCard", "pincode", "companyType"];
+  const fields = ["dob", "pan", "pincode", "emplyoment_type"];
   const [fetchScoreLoading, setFetchScoreLoading] = useState(false);
   const router = useRouter();
 
@@ -20,6 +25,20 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
     watch,
     trigger,
   } = useFormValidation(fields);
+
+  // Initialize form with user data
+  useEffect(() => {
+    if (userSearchData) {
+      Object.entries(userSearchData?.user?.at(0)).forEach(([field, value]) => {
+        if (field === "dob") {
+          const parsedDate = new Date(value); // Parse date
+          setValue(field, parsedDate); // Set as Date object
+        } else {
+          setValue(field, value);
+        }
+      });
+    }
+  }, [userSearchData, setValue]);
 
   // Handle form field changes
   const handleChange = (field) => async (e) => {
@@ -37,18 +56,30 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
   const handleFieldChange = (field, value) => {
     setValue(field, value);
     trigger(field); // Validate the field on change
+    setFormState((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   // Callback to handle date change
   const handleDateChange = (field, date) => {
     setValue(field, date);
     trigger(field);
+    setFormState((prev) => ({
+      ...prev,
+      [field]: date,
+    }));
   };
 
   // Callback to dropdown change
   const handleDropdownChange = (field, value) => {
     setValue(field, value);
     trigger(field);
+    setFormState((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const onSubmit = (data) => {
@@ -128,7 +159,7 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
                   {/* DOB */}
                   <CalendarInputTwo
                     placeholder="Date of Birth"
-                    value={watch("dob") || formState?.dob}
+                    value={watch("dob")}
                     onDateChange={(date) => {
                       handleDateChange("dob", date);
                     }}
@@ -140,20 +171,20 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
                     // type={isPanVisible ? "text" : "password"}
                     type="text"
                     placeholder="Pan Card"
-                    value={watch("panCard") || formState?.pancard}
+                    value={watch("pan")}
                     maxLength={10}
                     onChange={(e) => {
                       const uppercasedValue = e.target.value.toUpperCase(); // Auto-capitalize
-                      handleFieldChange("panCard", uppercasedValue);
+                      handleFieldChange("pan", uppercasedValue);
                     }}
-                    error={errors.panCard?.message}
+                    error={errors.pan?.message}
                   />
 
                   {/* Pincode */}
                   <InputTwo
                     type="text"
                     placeholder="Pincode"
-                    value={watch("pincode") || formState?.pincode}
+                    value={watch("pincode")}
                     maxLength={6}
                     onChange={handleChange("pincode")}
                     error={errors.pincode?.message}
@@ -161,19 +192,13 @@ const CheckCreditScroreForm = ({ formState, setFormState, setLoading }) => {
 
                   {/* Employment Type */}
                   <Dropdown
-                    options={[
-                      "Private Sector",
-                      "Public Sector",
-                      "Government",
-                      "Proprietorship",
-                      "Others",
-                    ]}
-                    selected={watch("companyType") || formState?.companyType}
+                    options={["Salaried", "Self-Employed", "Student"]}
+                    selected={watch("emplyoment_type")}
                     placeholder="Employment Type"
                     onChange={(value) =>
-                      handleDropdownChange("companyType", value)
+                      handleDropdownChange("emplyoment_type", value)
                     }
-                    error={errors.companyType?.message}
+                    error={errors.emplyoment_type?.message}
                   />
 
                   {/* Get OTP Button */}

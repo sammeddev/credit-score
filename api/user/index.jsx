@@ -2,7 +2,7 @@ import api from "../index";
 
 // Check Users API
 export const sendSMS = (payload) => {
-  return api.post("/v2/sendsms_v2.php", payload);
+  return api.post("/v3/send_sms.php", payload);
 };
 
 // Verify OTP API
@@ -12,7 +12,7 @@ export const verifyOTP = (payload) => {
 
 // Resend OTP API
 export const resendOTP = (payload) => {
-  return api.post("/Resend_otp.php", payload);
+  return api.post("/v3/Resend_otp.php", payload);
 };
 
 // Check Users API
@@ -39,6 +39,3 @@ export const partialSubmit = (payload) => {
 export const checkPincodeAPI = (payload) => {
   return api.post("/autopopulate_pincode_api.php", payload);
 };
-
-
-
